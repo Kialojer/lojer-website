@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Menu, X } from 'lucide-react';
+import GlowButton from './GlowButton';
 
 const navLinks = [
   { label: 'Solution', href: '#solution' },
@@ -11,12 +12,25 @@ const navLinks = [
 
 export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 50);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-xl border-b border-border/30">
-      <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-        <a href="#" className="flex items-center gap-0.5 text-xl font-bold font-space">
-          <span className="text-primary">L</span>
+    <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+      scrolled 
+        ? 'bg-background/80 border-b border-foreground/10 backdrop-blur-xl py-3' 
+        : 'bg-transparent py-5'
+    }`}>
+      <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
+        <a href="#" className="flex items-center gap-0.5 text-xl font-bold font-space tracking-[-0.06em] group">
+          <span className="text-primary transition-all duration-300">L</span>
           <span className="text-foreground">OJER</span>
         </a>
 
@@ -26,7 +40,7 @@ export default function Navbar() {
             <a
               key={link.label}
               href={link.href}
-              className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+              className="text-xs font-semibold uppercase tracking-[0.12em] text-muted-foreground hover:text-white transition-all duration-300"
             >
               {link.label}
             </a>
@@ -34,17 +48,14 @@ export default function Navbar() {
         </div>
 
         <div className="hidden md:flex items-center gap-4">
-          <a
-            href="mailto:info@lojer.app"
-            className="px-5 py-2 text-sm font-medium border border-primary text-primary rounded-full hover:bg-primary hover:text-primary-foreground transition-all"
-          >
+          <GlowButton href="mailto:info@lojer.app" variant="outline" className="text-sm px-6 py-2">
             INVEST
-          </a>
+          </GlowButton>
         </div>
 
         {/* Mobile hamburger */}
         <button
-          className="md:hidden text-foreground"
+          className="md:hidden text-foreground hover:text-primary transition-colors"
           onClick={() => setMobileOpen(!mobileOpen)}
         >
           {mobileOpen ? <X size={24} /> : <Menu size={24} />}
@@ -53,23 +64,23 @@ export default function Navbar() {
 
       {/* Mobile menu */}
       {mobileOpen && (
-        <div className="md:hidden bg-background/95 backdrop-blur-xl border-t border-border/30 px-6 py-6 space-y-4">
-          {navLinks.map(link => (
+        <div className="md:hidden liquid-glass border-t border-border/30 px-6 py-6 space-y-4 absolute top-full left-0 right-0 animate-accordion-down">
+          {navLinks.map((link, i) => (
             <a
               key={link.label}
               href={link.href}
-              className="block text-sm text-muted-foreground hover:text-foreground transition-colors"
+              className="block text-base font-medium text-muted-foreground hover:text-primary transition-colors"
+              style={{ animationDelay: `${i * 0.1}s` }}
               onClick={() => setMobileOpen(false)}
             >
               {link.label}
             </a>
           ))}
-          <a
-            href="mailto:info@lojer.app"
-            className="inline-block px-5 py-2 text-sm font-medium border border-primary text-primary rounded-full hover:bg-primary hover:text-primary-foreground transition-all"
-          >
-            INVEST
-          </a>
+          <div className="pt-4">
+            <GlowButton href="mailto:info@lojer.app" variant="solid" className="w-full text-sm">
+              INVEST
+            </GlowButton>
+          </div>
         </div>
       )}
     </nav>
