@@ -1,60 +1,391 @@
-import React, { useEffect } from 'react';
-import Navbar from '../components/lojer/Navbar';
-import HeroSection from '../components/lojer/HeroSection';
-import SolutionSection from '../components/lojer/SolutionSection';
-import EcosystemSection from '../components/lojer/EcosystemSection';
-import ProblemSection from '../components/lojer/ProblemSection';
-import MarketSection from '../components/lojer/MarketSection';
-import TokenomicsSection from '../components/lojer/TokenomicsSection';
-import AIAgentsSection from '../components/lojer/AIAgentsSection';
-import RoadmapSection from '../components/lojer/RoadmapSection';
-import AboutFounder from '../components/lojer/AboutFounder';
-import FooterSection from '../components/lojer/FooterSection';
-import { useLocation } from 'react-router-dom';
+import { useEffect, useRef, useState } from 'react';
+import {
+  ArrowDown, ArrowRight, ArrowUpRight, Bot, Camera, Check,
+  ChevronDown, Coins, MapPin, Menu, ScanLine, ShoppingBasket, Store, Wallet, X,
+} from 'lucide-react';
+import './Home.css';
 
-const IMAGES = {
-  heroPhone: 'https://media.base44.com/images/public/69fb893f52700de5f6c4df1e/b5ef617ec_generated_dcae646b.png',
-  techBg: 'https://media.base44.com/images/public/69fb893f52700de5f6c4df1e/a5723bc7f_generated_e8a57fed.png',
-  christStatue: 'https://media.base44.com/images/public/69fb893f52700de5f6c4df1e/555136383_generated_7f46e4bc.png',
-  marketPhoto: 'https://media.base44.com/images/public/69fb893f52700de5f6c4df1e/98908686b_generated_2bc2d91e.png',
-  aiAgents: 'https://media.base44.com/images/public/69fb893f52700de5f6c4df1e/1ea7f134d_generated_8cdde43d.png',
-  ecosystemBg: 'https://media.base44.com/images/public/69fb893f52700de5f6c4df1e/8a1f432a1_generated_12743916.png',
-};
+const contact = 'mailto:info@lojer.app';
+const linkedin = 'https://www.linkedin.com/company/lojer-app/';
+const marketSource = 'https://fecomercio.com.br/imprensa/e-commerce-teve-o-maior-faturamento-da-historia-em-2025-puxado-por-mais-hubs-empresas-e-mudancas-no-mercado-1/';
 
-export default function Home() {
-  const { hash } = useLocation();
+const navigation = [
+  { label: 'How it works', href: '#solution' },
+  { label: 'Ecosystem', href: '#tech-vision' },
+  { label: 'Tokenomics', href: '#tokenomics' },
+  { label: 'Roadmap', href: '#roadmap' },
+];
 
-  useEffect(() => {
-    // Smooth scroll to anchor on load if hash is present
-    if (hash) {
-      setTimeout(() => {
-        const element = document.querySelector(hash);
-        if (element) {
-          element.scrollIntoView({ behavior: 'smooth' });
-        }
-      }, 100);
-    } else {
-      window.scrollTo(0, 0);
-    }
-  }, [hash]);
+const steps = [
+  {
+    key: 'capture',
+    shortLabel: 'Capture',
+    icon: Camera,
+    title: 'Capture a shelf price',
+    description: 'Share a photo of the product and price tag as you shop.',
+  },
+  {
+    key: 'compare',
+    shortLabel: 'Compare',
+    icon: ScanLine,
+    title: 'Compare nearby stores',
+    description: 'See prices side by side with the help of AI and community submissions.',
+  },
+  {
+    key: 'earn',
+    shortLabel: 'Earn',
+    icon: Coins,
+    title: 'Earn for contributing',
+    description: 'Eligible, verified submissions are designed to earn LOJ rewards.',
+  },
+];
+
+const capabilities = [
+  {
+    id: 'marketplace',
+    icon: Store,
+    title: 'Community marketplace',
+    description: 'Help shoppers discover neighborhood stores alongside larger retailers using local price submissions.',
+  },
+  {
+    id: 'ai-agents',
+    icon: Bot,
+    title: 'AI verification and agents',
+    description: 'Check price photos using location and timestamps. Planned agents would find products from photos, compare price and distance, and help with repeat purchases.',
+  },
+  {
+    id: 'wallet',
+    icon: Wallet,
+    title: 'Wallet and rewards',
+    description: 'The roadmap includes a non-custodial W5 wallet on TON, LOJ rewards and tools for retailer tokens and NFTs.',
+  },
+];
+
+const allocations = [
+  ['Reward pools', 70, '#a984ff'],
+  ['Investors', 6, '#6cf6c2'],
+  ['Staking pools', 5.5, '#73abf9'],
+  ['Founders', 5, '#f0b9ff'],
+  ['Team members', 5, '#825bd8'],
+  ['Team expenses', 5, '#50a69d'],
+  ['Emergency reserves', 1.5, '#ffd183'],
+  ['Advisers', 1.5, '#f48cbf'],
+  ['Delivery team', 0.5, '#e4dcff'],
+];
+
+let position = 0;
+const allocationGradient = allocations.map(([, share, color]) => {
+  const start = position;
+  position += share;
+  return `${color} ${start}% ${position}%`;
+}).join(', ');
+
+const phases = [
+  {
+    title: 'App and wallet',
+    detail: 'Design and develop the core app, wallet and token. Introduce price capture and comparison in an initial São Paulo rollout.',
+  },
+  {
+    title: 'Rewards and marketplace',
+    detail: 'Introduce LOJ rewards and plan token distribution, airdrops and exchange listings. Expand into online shopping using feedback from the initial rollout.',
+  },
+  {
+    title: 'Retailer tools and AI agents',
+    detail: 'Build retailer partnerships, explore staking and develop shopping agents that can compare products and help with repeat purchases.',
+  },
+];
+
+function Brand() {
+  return (
+    <a href="#top" className="brand" aria-label="Lojer home">
+      <img src="/favicon.svg" alt="" width="30" height="30" />
+      <span>LOJER</span>
+    </a>
+  );
+}
+
+function ActionLink({ href, children, variant = 'solid', icon: Icon = ArrowUpRight }) {
+  return (
+    <a className={`action action--${variant}`} href={href}>
+      {children}
+      <span className="action-icon"><Icon size={15} aria-hidden="true" /></span>
+    </a>
+  );
+}
+
+function Header() {
+  const [menuOpen, setMenuOpen] = useState(false);
+  const menuToggle = useRef(null);
 
   return (
-    <div className="min-h-screen bg-background text-foreground overflow-x-hidden selection:bg-primary/30 selection:text-white">
-      <Navbar />
-      
-      <main>
-        <HeroSection heroPhoneImg={IMAGES.heroPhone} />
-        <SolutionSection />
-        <EcosystemSection />
-        <ProblemSection marketPhotoImg={IMAGES.marketPhoto} />
-        <MarketSection christStatueImg={IMAGES.christStatue} />
-        <TokenomicsSection />
-        <AIAgentsSection aiAgentsImg={IMAGES.aiAgents} />
-        <RoadmapSection />
-        <AboutFounder />
+    <header className="site-header" onKeyDown={(event) => {
+      if (event.key === 'Escape' && menuOpen) {
+        setMenuOpen(false);
+        menuToggle.current?.focus();
+      }
+    }}>
+      <div className="page-width header-inner">
+        <Brand />
+        <button
+          type="button"
+          className="menu-toggle"
+          ref={menuToggle}
+          aria-label={menuOpen ? 'Close menu' : 'Open menu'}
+          aria-expanded={menuOpen}
+          aria-controls="main-navigation"
+          onClick={() => setMenuOpen(!menuOpen)}
+        >
+          {menuOpen ? <X size={24} /> : <Menu size={24} />}
+        </button>
+        <nav
+          id="main-navigation"
+          className="main-navigation"
+          aria-label="Main navigation"
+          data-open={menuOpen}
+          onClick={(event) => {
+            if (event.target.closest('a')) setMenuOpen(false);
+          }}
+        >
+          {navigation.map(({ href, label }) => <a href={href} key={href}>{label}</a>)}
+          <ActionLink href="#contact" variant="outline">Get in touch</ActionLink>
+        </nav>
+      </div>
+    </header>
+  );
+}
+
+function Hero() {
+  return (
+    <>
+      <section className="hero" aria-labelledby="hero-title">
+        <picture className="hero-art">
+          <source media="(max-width: 700px)" srcSet="/images/lojer-price-tag-mobile.webp" />
+          <img src="/images/lojer-price-tag.webp" width="1536" height="1024" alt="" fetchPriority="high" />
+        </picture>
+        <div className="page-width hero-inner">
+          <div className="hero-copy">
+            <h1 id="hero-title">Snap a price.<br /><span>Shop smarter.</span></h1>
+            <p>Lojer brings shelf prices, AI-powered comparisons and crypto rewards together for shoppers in Brazil.</p>
+            <ActionLink href="#solution" icon={ArrowDown}>Explore how it works</ActionLink>
+          </div>
+          <a className="hero-preview" href="#demo">
+            <span className="preview-icon"><ScanLine size={24} aria-hidden="true" /></span>
+            <span><strong>Try a price comparison</strong><small>Interactive preview</small></span>
+            <ArrowUpRight className="preview-arrow" size={17} aria-hidden="true" />
+          </a>
+        </div>
+      </section>
+      <div className="capability-strip">
+        <div className="page-width strip-inner">
+          <span><Camera aria-hidden="true" /> Shelf price capture</span>
+          <span><ScanLine aria-hidden="true" /> AI price comparison</span>
+          <span><Coins aria-hidden="true" /> Community rewards</span>
+          <span><MapPin aria-hidden="true" /> Built for Brazil</span>
+        </div>
+      </div>
+    </>
+  );
+}
+
+function PricePreview() {
+  const [activeIndex, setActiveIndex] = useState(1);
+  const { key, title, icon: Icon } = steps[activeIndex];
+
+  return (
+    <div className="price-preview" id="demo" data-ui>
+      <div className="workflow" role="group" aria-label="Choose a step to preview">
+        {steps.map(({ key: stepKey, icon: StepIcon, title: stepTitle, shortLabel, description }, index) => (
+          <button
+            type="button"
+            key={stepKey}
+            aria-label={stepTitle}
+            aria-pressed={activeIndex === index}
+            aria-controls="demo-receipt"
+            onClick={() => setActiveIndex(index)}
+          >
+            <StepIcon aria-hidden="true" />
+            <span className="workflow-label"><strong>{stepTitle}</strong><small>{description}</small></span>
+            <span className="workflow-label-short" aria-hidden="true">{shortLabel}</span>
+            <ArrowRight size={18} aria-hidden="true" />
+          </button>
+        ))}
+      </div>
+
+      <div className="receipt-stage">
+        <div className="receipt" id="demo-receipt" aria-live="polite" aria-atomic="true">
+          <div className="receipt-top"><span>LOJER</span><span>Demo · São Paulo</span></div>
+          <div className="receipt-heading"><Icon size={23} aria-hidden="true" /><h3>{title}</h3></div>
+          {key === 'capture' && (
+            <div className="receipt-body" key={key}>
+              <div className="receipt-item"><span>Ground coffee · 500 g</span><strong>R$ 18,90</strong></div>
+              <p>In the planned app, you would photograph the label and submit the shelf price for verification.</p>
+            </div>
+          )}
+          {key === 'compare' && (
+            <div className="receipt-body" key={key}>
+              <p className="receipt-product"><ShoppingBasket size={17} aria-hidden="true" /> Ground coffee · 500 g</p>
+              <ul className="price-list">
+                <li><span>Neighborhood market</span><strong>R$ 18,90</strong></li>
+                <li><span>Local grocery</span><strong>R$ 21,50</strong></li>
+                <li><span>Supermarket</span><strong>R$ 23,90</strong></li>
+              </ul>
+              <div className="receipt-total"><Check size={17} aria-hidden="true" /> R$ 5,00 between lowest and highest</div>
+            </div>
+          )}
+          {key === 'earn' && (
+            <div className="receipt-body" key={key}>
+              <div className="receipt-item"><span>Sample contribution</span><strong>Verified</strong></div>
+              <p>Verified price photos could qualify for LOJ under the planned rewards program.</p>
+            </div>
+          )}
+          <div className="receipt-bottom"><span>Illustrative data</span><span className="barcode" aria-hidden="true" /></div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function Ecosystem() {
+  return (
+    <section className="section section--ecosystem" id="tech-vision" aria-labelledby="ecosystem-title">
+      <div className="page-width">
+        <div className="section-heading">
+          <h2 id="ecosystem-title">The Lojer ecosystem</h2>
+          <p>Three planned tools connect everyday shopping with local retail and community rewards.</p>
+        </div>
+        <div className="capabilities">
+          {capabilities.map(({ title, description, icon: Icon, id }) => (
+            <article className="capability" key={title} id={id}>
+              <h3><Icon size={24} aria-hidden="true" />{title}</h3>
+              <p>{description}</p>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function Market() {
+  return (
+    <section className="section section--market" id="about" aria-labelledby="market-title">
+      <div className="page-width market-layout">
+        <img className="market-image" src="/images/lojer-brazil-market.webp" alt="Illustration of a Brazilian neighborhood produce shop at dusk" width="1400" height="788" loading="lazy" />
+        <div className="market-copy" id="problem">
+          <h2 id="market-title">Built for Brazil.</h2>
+          <p>Prices can be hard to compare across neighborhood shops and big retailers. Lojer aims to make those prices easier to find and give small stores a way to reach nearby shoppers.</p>
+          <dl className="market-stats">
+            <div><dt>Brazilian e-commerce sales in 2025</dt><dd>R$ 295.6B</dd></div>
+            <div><dt>Growth from 2024 to 2025</dt><dd>20%</dd></div>
+          </dl>
+          <a className="text-link" href={marketSource} target="_blank" rel="noreferrer">FecomercioSP market report <ArrowUpRight size={16} aria-hidden="true" /></a>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function Tokenomics() {
+  return (
+    <section className="section section--token" id="tokenomics" aria-labelledby="token-title">
+      <div className="page-width">
+        <div className="section-heading">
+          <h2 id="token-title">LOJ tokenomics</h2>
+          <p>The proposed LOJ allocation puts 70% of tokens into community reward pools.</p>
+        </div>
+        <div className="token-layout" data-ui>
+          <div className="token-visual" aria-hidden="true">
+            <div className="token-ring" style={{ '--allocation': allocationGradient }}>
+              <span><strong>70%</strong><small>Reward pools</small></span>
+            </div>
+          </div>
+          <ul className="allocation-list" aria-label="Proposed token allocation">
+            {allocations.map(([label, share, color]) => (
+              <li key={label}><span className="allocation-swatch" style={{ backgroundColor: color }} /><span>{label}</span><strong>{share}%</strong></li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function Roadmap() {
+  return (
+    <section className="section section--roadmap" id="roadmap" aria-labelledby="roadmap-title">
+      <div className="page-width roadmap-layout">
+        <div>
+          <h2 id="roadmap-title">The roadmap</h2>
+          <p>From a São Paulo rollout to tools for more shoppers and local retailers. Timing is subject to change.</p>
+        </div>
+        <div className="phases">
+          {phases.map(({ title, detail }, index) => (
+            <details key={title} open={index === 0 ? true : undefined}>
+              <summary><span>{title}</span><ChevronDown size={20} aria-hidden="true" /></summary>
+              <p>{detail}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function Footer() {
+  return (
+    <footer className="site-footer">
+      <div className="page-width footer-main">
+        <div><Brand /><p>Price discovery for everyday shopping.</p></div>
+        <nav aria-label="Footer navigation">
+          {navigation.map(({ href, label }) => <a href={href} key={href}>{label}</a>)}
+          <a href="#about-founder">About Lojer</a>
+        </nav>
+        <div className="footer-contact">
+          <a className="text-link" href={contact}>info@lojer.app <ArrowUpRight size={15} aria-hidden="true" /></a>
+          <a className="text-link" href={linkedin} target="_blank" rel="noreferrer">LinkedIn <ArrowUpRight size={15} aria-hidden="true" /></a>
+        </div>
+      </div>
+      <div className="page-width footer-bottom">© {new Date().getFullYear()} Lojer</div>
+    </footer>
+  );
+}
+
+export default function Home() {
+  useEffect(() => {
+    const sectionId = window.location.hash.slice(1);
+    if (sectionId) document.getElementById(sectionId)?.scrollIntoView();
+  }, []);
+
+  return (
+    <div id="top">
+      <a className="skip-link" href="#content">Skip to content</a>
+      <Header />
+      <main id="content" tabIndex={-1}>
+        <Hero />
+        <section className="section section--workflow" id="solution" aria-labelledby="workflow-title">
+          <div className="page-width">
+            <div className="section-heading">
+              <h2 id="workflow-title">From shelf to savings.</h2>
+              <p>See how a photo of a price tag could help you and other shoppers decide where to buy.</p>
+            </div>
+            <PricePreview />
+          </div>
+        </section>
+        <Ecosystem />
+        <Market />
+        <Tokenomics />
+        <Roadmap />
+        <section className="section section--contact" id="about-founder" aria-labelledby="contact-title">
+          <div className="page-width contact-panel" id="contact">
+            <div>
+              <h2 id="contact-title">Build with Lojer.</h2>
+              <p>Our founder builds AI agents that work with real-world data and services. Get in touch about the project, retailer partnerships or early interest.</p>
+            </div>
+            <ActionLink href={contact}>Email Lojer</ActionLink>
+          </div>
+        </section>
       </main>
-      
-      <FooterSection />
+      <Footer />
     </div>
   );
 }
