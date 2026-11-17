@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import {
-  ArrowDown, ArrowRight, ArrowUpRight, Bot, Camera, Check,
-  ChevronDown, Coins, MapPin, Menu, ScanLine, ShoppingBasket, Store, Wallet, X,
+  ArrowDown, ArrowRight, ArrowUpRight, Camera, Check,
+  ChevronDown, Coins, MapPin, Menu, ScanLine, ShoppingBasket, X,
 } from 'lucide-react';
 import './Home.css';
 
@@ -43,19 +43,16 @@ const steps = [
 const capabilities = [
   {
     id: 'marketplace',
-    icon: Store,
     title: 'Community marketplace',
     description: 'Help shoppers discover neighborhood stores alongside larger retailers using local price submissions.',
   },
   {
     id: 'ai-agents',
-    icon: Bot,
     title: 'AI verification and agents',
     description: 'Check price photos using location and timestamps. Planned agents would find products from photos, compare price and distance, and help with repeat purchases.',
   },
   {
     id: 'wallet',
-    icon: Wallet,
     title: 'Wallet and rewards',
     description: 'The roadmap includes a non-custodial W5 wallet on TON, LOJ rewards and tools for retailer tokens and NFTs.',
   },
@@ -254,9 +251,9 @@ function Ecosystem() {
           <p>Three planned tools connect everyday shopping with local retail and community rewards.</p>
         </div>
         <div className="capabilities">
-          {capabilities.map(({ title, description, icon: Icon, id }) => (
+          {capabilities.map(({ title, description, id }) => (
             <article className="capability" key={title} id={id}>
-              <h3><Icon size={24} aria-hidden="true" />{title}</h3>
+              <h3>{title}</h3>
               <p>{description}</p>
             </article>
           ))}
