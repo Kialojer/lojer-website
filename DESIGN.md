@@ -24,8 +24,8 @@ The reference's dark cinematic composition carries Lojer's own price-tag artwork
 ## Sections and behavior
 
 - The sticky header uses inline section links on desktop and a toggle below 790px.
-- The hero leads to the workflow and has a separate link to the interactive receipt. Buttons switch the receipt among capture, comparison, and rewards using illustrative data.
-- The ecosystem tiles explain the planned marketplace, AI tools, and TON wallet.
+- The hero restores the original photo-to-crypto message using the headline “Take Photo, Earn Crypto”. The shopping demo opens on a photo-led capture step. Compare and Earn show receipts with illustrative data.
+- The ecosystem tiles explain the planned marketplace, Lojer Agent, and TON wallet. The Lojer Agent section covers photo-based product search and the planned IoT integration, including the example of a connected fridge detecting low stock.
 - The Brazil section cites the [FecomercioSP 2025 e-commerce report](https://fecomercio.com.br/imprensa/e-commerce-teve-o-maior-faturamento-da-historia-em-2025-puxado-por-mais-hubs-empresas-e-mudancas-no-mercado-1/).
 - The token ring is paired with a readable allocation list. The roadmap uses native disclosures. Contact links open email or LinkedIn.
 
@@ -35,3 +35,4 @@ Generated with the built-in image tool for Lojer and served locally.
 
 - [Desktop hero](public/images/lojer-price-tag.webp), [mobile crop](public/images/lojer-price-tag-mobile.webp), and [share image](public/images/lojer-share.jpg) show a beveled, translucent violet price tag with an etched barcode and violet and teal studio light. The source prompt placed the object on the right with near-black space for the headline.
 - [Brazil market image](public/images/lojer-brazil-market.webp) is an editorial illustration of a neighborhood produce shop in São Paulo at blue hour, with warm storefront light and fruit crates.
+- [Capture step](public/images/lojer-capture.webp) illustrates an adult grocery shopper, seen over the shoulder, using their phone camera to photograph a bag of coffee and its shelf label.

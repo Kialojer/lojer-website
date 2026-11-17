@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import {
   ArrowDown, ArrowRight, ArrowUpRight, Camera, Check,
-  ChevronDown, Coins, MapPin, Menu, ScanLine, ShoppingBasket, X,
+  ChevronDown, Coins, MapPin, Menu, Refrigerator, ScanLine, ShoppingBasket, X,
 } from 'lucide-react';
 import './Home.css';
 
@@ -47,9 +47,10 @@ const capabilities = [
     description: 'Help shoppers discover neighborhood stores alongside larger retailers using local price submissions.',
   },
   {
-    id: 'ai-agents',
-    title: 'AI verification and agents',
-    description: 'Check price photos using location and timestamps. Planned agents would find products from photos, compare price and distance, and help with repeat purchases.',
+    id: 'agent-overview',
+    title: 'Lojer Agent',
+    description: 'Product search from a photo, price comparison and shopping automation with connected devices.',
+    link: '#ai-agents',
   },
   {
     id: 'wallet',
@@ -87,8 +88,8 @@ const phases = [
     detail: 'Introduce LOJ rewards and plan token distribution, airdrops and exchange listings. Expand into online shopping using feedback from the initial rollout.',
   },
   {
-    title: 'Retailer tools and AI agents',
-    detail: 'Build retailer partnerships, explore staking and develop shopping agents that can compare products and help with repeat purchases.',
+    title: 'Retailer tools and Lojer Agent',
+    detail: 'Build retailer partnerships, explore staking and develop Lojer Agent to compare products and help with repeat purchases.',
   },
 ];
 
@@ -161,13 +162,13 @@ function Hero() {
         </picture>
         <div className="page-width hero-inner">
           <div className="hero-copy">
-            <h1 id="hero-title">Snap a price.<br /><span>Shop smarter.</span></h1>
-            <p>Lojer brings shelf prices, AI-powered comparisons and crypto rewards together for shoppers in Brazil.</p>
+            <h1 id="hero-title">Take Photo,<br /><span>Earn Crypto</span></h1>
+            <p>Take photos of products and shelf prices. Compare nearby stores and see how verified photos could earn LOJ.</p>
             <ActionLink href="#solution" icon={ArrowDown}>Explore how it works</ActionLink>
           </div>
           <a className="hero-preview" href="#demo">
             <span className="preview-icon"><ScanLine size={24} aria-hidden="true" /></span>
-            <span><strong>Try a price comparison</strong><small>Interactive preview</small></span>
+            <span><strong>Try the shopping demo</strong><small>Capture, compare and earn</small></span>
             <ArrowUpRight className="preview-arrow" size={17} aria-hidden="true" />
           </a>
         </div>
@@ -185,8 +186,9 @@ function Hero() {
 }
 
 function PricePreview() {
-  const [activeIndex, setActiveIndex] = useState(1);
+  const [activeIndex, setActiveIndex] = useState(0);
   const { key, title, icon: Icon } = steps[activeIndex];
+  const isCapture = key === 'capture';
 
   return (
     <div className="price-preview" id="demo" data-ui>
@@ -197,7 +199,7 @@ function PricePreview() {
             key={stepKey}
             aria-label={stepTitle}
             aria-pressed={activeIndex === index}
-            aria-controls="demo-receipt"
+            aria-controls="demo-panel"
             onClick={() => setActiveIndex(index)}
           >
             <StepIcon aria-hidden="true" />
@@ -208,35 +210,44 @@ function PricePreview() {
         ))}
       </div>
 
-      <div className="receipt-stage">
-        <div className="receipt" id="demo-receipt" aria-live="polite" aria-atomic="true">
-          <div className="receipt-top"><span>LOJER</span><span>Demo · São Paulo</span></div>
-          <div className="receipt-heading"><Icon size={23} aria-hidden="true" /><h3>{title}</h3></div>
-          {key === 'capture' && (
-            <div className="receipt-body" key={key}>
-              <div className="receipt-item"><span>Ground coffee · 500 g</span><strong>R$ 18,90</strong></div>
-              <p>In the planned app, you would photograph the label and submit the shelf price for verification.</p>
-            </div>
-          )}
-          {key === 'compare' && (
-            <div className="receipt-body" key={key}>
-              <p className="receipt-product"><ShoppingBasket size={17} aria-hidden="true" /> Ground coffee · 500 g</p>
-              <ul className="price-list">
-                <li><span>Neighborhood market</span><strong>R$ 18,90</strong></li>
-                <li><span>Local grocery</span><strong>R$ 21,50</strong></li>
-                <li><span>Supermarket</span><strong>R$ 23,90</strong></li>
-              </ul>
-              <div className="receipt-total"><Check size={17} aria-hidden="true" /> R$ 5,00 between lowest and highest</div>
-            </div>
-          )}
-          {key === 'earn' && (
-            <div className="receipt-body" key={key}>
-              <div className="receipt-item"><span>Sample contribution</span><strong>Verified</strong></div>
-              <p>Verified price photos could qualify for LOJ under the planned rewards program.</p>
-            </div>
-          )}
-          <div className="receipt-bottom"><span>Illustrative data</span><span className="barcode" aria-hidden="true" /></div>
-        </div>
+      <div className={`receipt-stage${isCapture ? ' receipt-stage--capture' : ''}`} id="demo-panel" aria-live="polite" aria-atomic="true">
+        {isCapture ? (
+          <figure className="capture-preview">
+            <img
+              src="/images/lojer-capture.webp"
+              alt="A shopper uses their phone to photograph a coffee bag and its shelf price label"
+              width="1120"
+              height="840"
+              loading="lazy"
+            />
+            <figcaption>
+              <h3>{title}</h3>
+              <p>Frame the product and its price tag together before submitting the photo for verification.</p>
+            </figcaption>
+          </figure>
+        ) : (
+          <div className="receipt">
+            <div className="receipt-top"><span>LOJER</span><span>Demo · São Paulo</span></div>
+            <div className="receipt-heading"><Icon size={23} aria-hidden="true" /><h3>{title}</h3></div>
+            {key === 'compare' ? (
+              <div className="receipt-body" key={key}>
+                <p className="receipt-product"><ShoppingBasket size={17} aria-hidden="true" /> Ground coffee · 500 g</p>
+                <ul className="price-list">
+                  <li><span>Neighborhood market</span><strong>R$ 18,90</strong></li>
+                  <li><span>Local grocery</span><strong>R$ 21,50</strong></li>
+                  <li><span>Supermarket</span><strong>R$ 23,90</strong></li>
+                </ul>
+                <div className="receipt-total"><Check size={17} aria-hidden="true" /> R$ 5,00 between lowest and highest</div>
+              </div>
+            ) : (
+              <div className="receipt-body" key={key}>
+                <div className="receipt-item"><span>Sample contribution</span><strong>Verified</strong></div>
+                <p>Verified price photos could qualify for LOJ under the planned rewards program.</p>
+              </div>
+            )}
+            <div className="receipt-bottom"><span>Illustrative data</span><span className="barcode" aria-hidden="true" /></div>
+          </div>
+        )}
       </div>
     </div>
   );
@@ -251,12 +262,31 @@ function Ecosystem() {
           <p>Three planned tools connect everyday shopping with local retail and community rewards.</p>
         </div>
         <div className="capabilities">
-          {capabilities.map(({ title, description, id }) => (
+          {capabilities.map(({ title, description, id, link }) => (
             <article className="capability" key={title} id={id}>
               <h3>{title}</h3>
               <p>{description}</p>
+              {link && <a className="text-link" href={link}>Explore Lojer Agent <ArrowDown size={16} aria-hidden="true" /></a>}
             </article>
           ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function LojerAgent() {
+  return (
+    <section className="section section--agent" id="ai-agents" aria-labelledby="agent-title">
+      <div className="page-width agent-layout">
+        <div className="agent-copy">
+          <h2 id="agent-title">Lojer Agent</h2>
+          <p>Lojer Agent is designed to automate shopping around your preferences. With a product photo, it could find the item in nearby stores, suggest alternatives, and compare options by price, quality, and distance using verified shopper feedback.</p>
+        </div>
+        <div className="agent-device">
+          <Refrigerator size={31} aria-hidden="true" />
+          <h3>Smart IoT integration</h3>
+          <p>A connected device, such as a smart refrigerator, could detect when an item is running low and trigger a purchase request through Lojer.</p>
         </div>
       </div>
     </section>
@@ -363,12 +393,13 @@ export default function Home() {
           <div className="page-width">
             <div className="section-heading">
               <h2 id="workflow-title">From shelf to savings.</h2>
-              <p>See how a photo of a price tag could help you and other shoppers decide where to buy.</p>
+              <p>Take a photo, compare prices in nearby stores, and see how verified contributions could earn LOJ.</p>
             </div>
             <PricePreview />
           </div>
         </section>
         <Ecosystem />
+        <LojerAgent />
         <Market />
         <Tokenomics />
         <Roadmap />
