@@ -3,6 +3,7 @@ import {
   ArrowDown, ArrowRight, ArrowUpRight, Camera, Check,
   ChevronDown, Coins, MapPin, Menu, Refrigerator, ScanLine, ShoppingBasket, X,
 } from 'lucide-react';
+import HeroMotion from './HeroMotion';
 import './Home.css';
 
 const contact = 'mailto:info@lojer.app';
@@ -156,16 +157,13 @@ function Hero() {
   return (
     <>
       <section className="hero" aria-labelledby="hero-title">
-        <picture className="hero-art">
-          <source media="(max-width: 700px)" srcSet="/images/lojer-price-tag-mobile.webp" />
-          <img src="/images/lojer-price-tag.webp" width="1536" height="1024" alt="" fetchPriority="high" />
-        </picture>
         <div className="page-width hero-inner">
           <div className="hero-copy">
             <h1 id="hero-title">Take Photo,<br /><span>Earn Crypto</span></h1>
             <p>Take photos of products and shelf prices. Compare nearby stores and see how verified photos could earn LOJ.</p>
             <ActionLink href="#solution" icon={ArrowDown}>Explore how it works</ActionLink>
           </div>
+          <HeroMotion />
           <a className="hero-preview" href="#demo">
             <span className="preview-icon"><ScanLine size={24} aria-hidden="true" /></span>
             <span><strong>Try the shopping demo</strong><small>Capture, compare and earn</small></span>
